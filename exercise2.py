@@ -1,9 +1,9 @@
 """
-CRAI+IT API 세션 - 실습 2: LLM → UI 연결
+CRAI+IT API 세션 - 실습 2: LLM -> UI 연결
 목표: Structured Output을 받아서 HTML UI로 표시하기
 
 흐름:
-User input → LLM API 호출 → JSON 응답 → 코드에서 파싱 → HTML UI 출력
+User input -> LLM API 호출 -> JSON 응답 -> 코드에서 파싱 -> HTML UI 출력
 """
 
 # ============================================
@@ -12,8 +12,13 @@ User input → LLM API 호출 → JSON 응답 → 코드에서 파싱 → HTML U
 from openai import OpenAI
 import json
 import os
+import sys
 import webbrowser
 from dotenv import load_dotenv
+
+# Windows 콘솔 UTF-8 출력 설정
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # ============================================
 # Step 2: 환경변수에서 API 키 로드
@@ -23,11 +28,11 @@ load_dotenv()
 api_key = os.getenv("OPENROUTER_API_KEY")
 
 if not api_key:
-    print("❌ 오류: OPENROUTER_API_KEY가 설정되지 않았습니다.")
-    print("   .env 파일을 확인해주세요.")
+    print("[ERROR] OPENROUTER_API_KEY가 설정되지 않았습니다.")
+    print("        .env 파일을 확인해주세요.")
     exit(1)
 
-print(f"✅ API 키 로드 완료: {api_key[:15]}...")
+print(f"[OK] API 키 로드 완료: {api_key[:15]}...")
 
 # ============================================
 # Step 3: OpenRouter 클라이언트 생성
@@ -42,19 +47,19 @@ client = OpenAI(
 # ============================================
 print()
 print("=" * 50)
-print("🎤 문장을 입력하면 정보를 추출해서 카드 UI로 보여드려요!")
+print("문장을 입력하면 정보를 추출해서 카드 UI로 보여드려요!")
 print("=" * 50)
 print()
 
 # 사용자 입력 또는 기본값
-user_input = input("📝 문장 입력 (Enter = 기본값 사용): ").strip()
+user_input = input("[INPUT] 문장 입력 (Enter = 기본값 사용): ").strip()
 
 if not user_input:
     user_input = "Tom is 23 years old and works as a software engineer at Google."
-    print(f"   → 기본값 사용: {user_input}")
+    print(f"        -> 기본값 사용: {user_input}")
 
 print()
-print("🤖 LLM에게 요청 중...")
+print("[...] LLM에게 요청 중...")
 
 # ============================================
 # Step 5: Structured Output API 호출 (확장된 스키마)
@@ -103,7 +108,7 @@ content = response.choices[0].message.content
 data = json.loads(content)
 
 print()
-print("📤 LLM 응답 (JSON):")
+print("[OUTPUT] LLM 응답 (JSON):")
 print(json.dumps(data, indent=2, ensure_ascii=False))
 
 # ============================================
@@ -252,7 +257,7 @@ html_content = f"""<!DOCTYPE html>
 <body>
     <div class="header">
         <h1>CRAI+IT API Session</h1>
-        <p>LLM Structured Output → UI Demo</p>
+        <p>LLM Structured Output -> UI Demo</p>
     </div>
 
     <div class="card">
@@ -301,16 +306,16 @@ with open(output_file, "w", encoding="utf-8") as f:
 
 print()
 print("=" * 50)
-print(f"✅ HTML 파일 생성 완료: {output_file}")
+print(f"[OK] HTML 파일 생성 완료: {output_file}")
 print("=" * 50)
 
 # 브라우저에서 열기
 print()
-print("🌐 브라우저에서 결과를 여는 중...")
+print("[...] 브라우저에서 결과를 여는 중...")
 webbrowser.open(f"file://{os.path.abspath(output_file)}")
 
 print()
-print("✨ 실습 2 완료!")
+print("[DONE] 실습 2 완료!")
 print()
-print("💡 이것이 바로 AI → API → JSON → UI 흐름입니다!")
-print("   실제 서비스에서는 이 JSON 데이터를 React, Vue 등으로 렌더링합니다.")
+print("[TIP] 이것이 바로 AI -> API -> JSON -> UI 흐름입니다!")
+print("      실제 서비스에서는 이 JSON 데이터를 React, Vue 등으로 렌더링합니다.")
